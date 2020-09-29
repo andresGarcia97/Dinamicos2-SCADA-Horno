@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "hornoDinamicos2"
+    }
+  },
+  "defaultProject": "hornoDinamicos2",
+  "cli": {
+    "analytics": "47403dc6-c7e9-4d77-b0de-329c0755582e"
+  }
 }
