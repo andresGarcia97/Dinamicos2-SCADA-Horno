@@ -20,28 +20,33 @@ export class AppComponent {
   imprimir: Formula = new Formula();
   resultados: Formula[] = [];
 
+  // valor inicial  = 0
   T(i: number): number {
-    return i;
+    return 0;
   }
+  // entrada escalon
   V(i: number): number {
-    return i;
+    return 1;
   }
 
   basico(size = 1): void {
+    this.resultados = [];
     size = 10;
     let interval = null;
-    let ts = 0.1;
-    this.imprimir = new Formula(0, this.T(0) + this.V(0));
+    // tiempo de muestreo
+    let ts = 1;
+    let i = 0;
+    this.imprimir = new Formula(i, this.V(i) * ts * i + this.T(i));
     this.resultados.push(this.imprimir);
-    let i = 1;
+    i = 1;
     interval = setInterval(() => {
-      this.imprimir = new Formula(i, this.T(i) + this.V(1) * ts);
+      this.imprimir = new Formula(i, this.V(i) * ts * i + this.T(i));
       this.resultados.push(this.imprimir);
       i++;
       if (i === size + 1) {
         clearInterval(interval);
       }
-    }, 1000);
+    }, ts * 1000);
   }
 }
 
