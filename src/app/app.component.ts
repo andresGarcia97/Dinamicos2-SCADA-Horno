@@ -31,16 +31,18 @@ export class AppComponent {
 
   basico(size = 1): void {
     this.resultados = [];
-    size = 10;
+    size = 20;
     let interval = null;
     // tiempo de muestreo
-    let ts = 1;
+    let ts = 0.1;
     let i = 0;
     this.imprimir = new Formula(i, this.V(i) * ts * i + this.T(i));
     this.resultados.push(this.imprimir);
     i = 1;
     interval = setInterval(() => {
       this.imprimir = new Formula(i, this.V(i) * ts * i + this.T(i));
+      // paso de milisegundos a segundos
+      this.imprimir.resultado = Math.round(this.imprimir.resultado / ts);
       this.resultados.push(this.imprimir);
       i++;
       if (i === size + 1) {
