@@ -19,36 +19,34 @@ export class AppComponent {
   tiempo = 0;
   imprimir: Formula = new Formula();
   resultados: Formula[] = [];
+  voltaje = 5;
+  ts = 0.1;
 
-  // valor inicial  = 0
-  T(i: number): number {
-    return 0;
+  T(temperatura: number): number {
+    return temperatura;
   }
-  // entrada escalon
-  V(i: number): number {
-    return 1;
+  // entrada voltaje
+  V(voltaje = 1): number {
+    return voltaje;
   }
 
   basico(size = 1): void {
     this.resultados = [];
     size = 20;
     let interval = null;
-    // tiempo de muestreo
-    let ts = 0.1;
-    let i = 0;
-    this.imprimir = new Formula(i, this.V(i) * ts * i + this.T(i));
+    this.imprimir = new Formula(this.tiempo, this.V(this.voltaje) * this.ts * 0 + this.T(0));
     this.resultados.push(this.imprimir);
-    i = 1;
+    this.tiempo = 1;
     interval = setInterval(() => {
-      this.imprimir = new Formula(i, this.V(i) * ts * i + this.T(i));
+      this.imprimir = new Formula(this.tiempo, this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo - 1].resultado));
       // paso de milisegundos a segundos
-      this.imprimir.resultado = Math.round(this.imprimir.resultado / ts);
       this.resultados.push(this.imprimir);
-      i++;
-      if (i === size + 1) {
+      this.tiempo++;
+      if (this.tiempo === size + 1) {
         clearInterval(interval);
+        this.tiempo = 0;
       }
-    }, ts * 1000);
+    }, this.ts * 1000);
   }
 }
 

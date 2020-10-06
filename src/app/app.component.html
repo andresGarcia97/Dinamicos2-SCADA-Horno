@@ -22,12 +22,14 @@
               <tr>
                 <th scope="col">Tiempo</th>
                 <th scope="col">Resultado</th>
+                <th scope="col">Voltaje</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let resultado of resultados">
                 <th scope="col">{{resultado.tiempo}}</th>
                 <th scope="col">{{resultado.resultado}}</th>
+                <th scope="col">{{voltaje}}</th>
               </tr>
             </tbody>
           </table>
