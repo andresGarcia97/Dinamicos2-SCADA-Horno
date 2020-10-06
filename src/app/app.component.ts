@@ -1,11 +1,21 @@
 import { Component } from '@angular/core';
+import { Chart } from 'chart.js';
 
 class Formula {
   tiempo: number;
-  resultado: number;
+  temperatura: number;
   constructor(tiempo = 0, resultado = 0) {
     this.tiempo = tiempo;
-    this.resultado = resultado;
+    this.temperatura = resultado;
+  }
+}
+
+class DataChart {
+  x: number;
+  y: number;
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
   }
 }
 
@@ -15,36 +25,85 @@ class Formula {
 })
 export class AppComponent {
   title = 'hornoDinamicos2';
-  resultado = 0;
+  tituloGrafica = 'grafica';
   tiempo = 0;
   imprimir: Formula = new Formula();
   resultados: Formula[] = [];
   voltaje = 5;
   ts = 0.1;
+  chart: any;
+  datas = [];
+  interval = null;
 
-  T(temperatura: number): number {
+  private T(temperatura: number): number {
     return temperatura;
   }
-  // entrada voltaje
-  V(voltaje = 1): number {
+  private V(voltaje = 1): number {
     return voltaje;
   }
 
-  basico(size = 1): void {
+  private graficar(): void {
+    this.chart = new Chart(this.tituloGrafica, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Temperatura en el Tiempo',
+          showLine: true,
+          backgroundColor: 'rgba(56, 111, 164, 0.6)',
+          pointBorderColor: 'rgba(0, 0, 0)',
+          pointBackgroundColor: 'rgba(255, 255, 255)',
+          borderColor: 'rgba(0, 0, 0)',
+          data: this.datas,
+        }],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Tiempo'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Temperatura'
+            }
+          }]
+        }
+      }
+    });
+  }
+
+  private insercionDatos(): void {
+    this.resultados.push(this.imprimir);
+    this.datas.push(new DataChart(this.tiempo, this.imprimir.temperatura));
+    this.chart.update();
+  }
+
+  public apagar(): void {
+    clearInterval(this.interval);
+    this.tiempo--;
+  }
+
+  public hornoBasico(size = 1): void {
+    this.datas = [];
+    this.graficar();
     this.resultados = [];
     size = 20;
-    let interval = null;
+    this.tiempo = 0;
     this.imprimir = new Formula(this.tiempo, this.V(this.voltaje) * this.ts * 0 + this.T(0));
-    this.resultados.push(this.imprimir);
+    this.insercionDatos();
     this.tiempo = 1;
-    interval = setInterval(() => {
-      this.imprimir = new Formula(this.tiempo, this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo - 1].resultado));
-      // paso de milisegundos a segundos
-      this.resultados.push(this.imprimir);
+    this.interval = setInterval(() => {
+      this.imprimir = new Formula(this.tiempo, this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo - 1].temperatura));
+      this.insercionDatos();
       this.tiempo++;
       if (this.tiempo === size + 1) {
-        clearInterval(interval);
-        this.tiempo = 0;
+        this.apagar();
       }
     }, this.ts * 1000);
   }

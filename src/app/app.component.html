@@ -1,39 +1,37 @@
 <body>
   <div class="container">
     <div class="header clearfix sub-container">
-      <h3 class="text-muted title">Funcion basica</h3>
+      <h2 class="text-muted title text-center">Horno</h2>
     </div>
     <br />
-    <div class="row">
-      <div class="jumbotron col-lg-5">
+    <div class="row nopadding">
+      <div class="jumbotron col-lg-4">
         <div class="row marketing">
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success" (click)="basico()">iniciar</button>
+            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar</button>
           </div>
-          <div class="col-8">
+          <div class="col-4">
+            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagar()">Apagar</button>
           </div>
         </div>
         <br>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Tiempo</th>
+              <th scope="col">Temperatura</th>
+              <th scope="col">Voltaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <th scope="col">{{tiempo}}</th>
+            <th scope="col">{{imprimir.temperatura}}</th>
+            <th scope="col">{{voltaje}}</th>
+          </tbody>
+        </table>
       </div>
-      <div class="col-lg-7">
-        <div class="jumbotron">
-          <table class="table">
-            <thead class="thead-dark">
-              <tr>
-                <th scope="col">Tiempo</th>
-                <th scope="col">Resultado</th>
-                <th scope="col">Voltaje</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let resultado of resultados">
-                <th scope="col">{{resultado.tiempo}}</th>
-                <th scope="col">{{resultado.resultado}}</th>
-                <th scope="col">{{voltaje}}</th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="col-lg-8 nopadding">
+        <canvas [id]="tituloGrafica"></canvas>
       </div>
     </div>
   </div>
