@@ -1,17 +1,20 @@
 <body>
   <div class="container">
     <div class="header clearfix sub-container">
-      <h2 class="text-muted title text-center">Horno</h2>
+      <h2 class="text-muted title text-center">Horno sin Disipación</h2>
     </div>
     <br />
     <div class="row nopadding">
       <div class="jumbotron col-lg-4">
         <div class="row marketing">
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar</button>
+            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar Reiniciar</button>
           </div>
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagar()">Apagar</button>
+            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarBasico()">Apagar</button>
+          </div>
+          <div class="col-4">
+            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasico()">Pausar  Reanudar</button>
           </div>
         </div>
         <br>
@@ -24,14 +27,52 @@
             </tr>
           </thead>
           <tbody>
-            <th scope="col">{{tiempo}}</th>
-            <th scope="col">{{imprimir.temperatura}}</th>
+            <th scope="col">{{tiempo1}}</th>
+            <th scope="col">{{resultado1}}°</th>
             <th scope="col">{{voltaje}}</th>
           </tbody>
         </table>
       </div>
       <div class="col-lg-8 nopadding">
-        <canvas [id]="tituloGrafica"></canvas>
+        <canvas [id]="tituloGraficaBasica"></canvas>
+      </div>
+    </div>
+    <div class="header clearfix sub-container">
+      <h2 class="text-muted title text-center">Horno con Disipación</h2>
+    </div>
+    <br />
+    <div class="row nopadding">
+      <div class="jumbotron col-lg-4">
+        <div class="row marketing">
+          <div class="col-4">
+            <button type="button" id="btnEnceder" class="btn btn-success"
+              (click)="hornoDisipacion()">Iniciar Reiniciar</button>
+          </div>
+          <div class="col-4">
+            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarDisipacion()">Apagar</button>
+          </div>
+          <div class="col-4">
+            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarDisipacion()">Pausar Reanudar</button>
+          </div>
+        </div>
+        <br>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Tiempo</th>
+              <th scope="col">Temperatura</th>
+              <th scope="col">Voltaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <th scope="col">{{tiempo2}}</th>
+            <th scope="col">{{temperaturaRedondeo}}°</th>
+            <th scope="col">{{voltaje2}}</th>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-lg-8 nopadding">
+        <canvas [id]="titulograficaDisipacion"></canvas>
       </div>
     </div>
   </div>
