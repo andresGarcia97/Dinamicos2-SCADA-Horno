@@ -9,12 +9,14 @@ import { DataChart } from './clases';
 export class AppComponent {
   title = 'hornoDinamicos2';
 
+  // variables globales
+  voltaje = 2;
+  ts = 1;
+
   // variables primer ejercicio, sin disipacion
   tituloGraficaBasica = 'grafica1';
   tiempo1 = 0;
   resultado1 = 0;
-  voltaje = 5;
-  ts1 = 0.1;
   graficaBasica: any;
   resultados = [];
   datos = [];
@@ -29,9 +31,7 @@ export class AppComponent {
   den1 = 1.984;
   den2 = -0.9841;
   salidaSistema = [0, 0, 0, 0];
-  voltaje2 = 2;
-  u = [this.voltaje2, this.voltaje2, this.voltaje2, this.voltaje2];
-  ts2 = 1;
+  u = [this.voltaje, this.voltaje, this.voltaje, this.voltaje];
   tiempo2 = 0;
   referencia2 = 1;
   interval2 = null;
@@ -53,7 +53,7 @@ export class AppComponent {
       type: 'scatter',
       data: {
         datasets: [{
-          label: 'Temperatura en el Tiempo',
+          label: 'Temperatura sin Disipación',
           showLine: true,
           backgroundColor: 'rgba(56, 111, 164, 0.6)',
           pointBorderColor: 'rgba(0, 0, 0)',
@@ -89,7 +89,7 @@ export class AppComponent {
       type: 'scatter',
       data: {
         datasets: [{
-          label: 'Temperatura en el Tiempo con Disipación',
+          label: 'Temperatura con Disipación',
           showLine: true,
           backgroundColor: 'rgb(255,69,0,0.6)',
           pointBorderColor: 'rgba(0, 0, 0)',
@@ -129,19 +129,17 @@ export class AppComponent {
   private insercionDatosDisipacion(): void {
     this.temperaturaRedondeo = Math.round(this.resultado2);
     this.salidaSistema.push(this.resultado2);
-    this.u.push(this.voltaje2);
+    this.u.push(this.voltaje);
     this.datos2.push(new DataChart(this.tiempo2, this.resultado2));
     this.graficaDisipacion.update();
   }
 
   public apagarBasico(): void {
     clearInterval(this.interval1);
-    this.tiempo1--;
   }
 
   public apagarDisipacion(): void {
     clearInterval(this.interval2);
-    this.tiempo2--;
   }
 
   public pausarBasico(): void {
@@ -160,25 +158,26 @@ export class AppComponent {
     this.resultado1 = 0;
     const size = 400;
     this.tiempo1 = 0;
-    this.resultado1 = this.V(this.voltaje) * this.ts1 * 0 + this.T(0);
+    this.resultado1 = this.V(this.voltaje) * this.ts * 0  + this.T(0);
+    this.resultados.push(this.resultado1);
     this.insercionDatosBasico();
     this.tiempo1 = 1;
     this.interval1 = setInterval(() => {
       if (this.pausadoBasico) {
-        this.resultado1 = this.V(this.voltaje) * this.ts1 + this.T(this.resultados[this.tiempo1 - 1]);
+        this.resultado1 = this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo1 - 1]);
         this.insercionDatosBasico();
         this.tiempo1++;
-        if (this.tiempo1 === size + 1) {
+        if (this.tiempo1 === size) {
           this.apagarBasico();
         }
       }
-    }, this.ts1);
+    }, this.ts);
   }
 
   public hornoDisipacion(): void {
     this.pausadoDisipasion = true;
     this.salidaSistema = [0, 0, 0, 0];
-    this.u = [this.voltaje2, this.voltaje2, this.voltaje2, this.voltaje2];
+    this.u = [this.voltaje, this.voltaje, this.voltaje, this.voltaje];
     this.datos2 = [];
     this.tiempo2 = 4;
     this.datos2.push(new DataChart(this.tiempo2 - 4, this.salidaSistema[this.tiempo2 - 4]));
@@ -194,11 +193,11 @@ export class AppComponent {
           this.den1 * this.salidaSistema[this.tiempo2 - 1] + this.den2 * this.salidaSistema[this.tiempo2 - 2];
         this.insercionDatosDisipacion();
         this.tiempo2++;
-        if (this.tiempo2 === size + 1) {
+        if (this.tiempo2 === size) {
           this.apagarDisipacion();
         }
       }
-    }, this.ts2);
+    }, this.ts);
   }
 }
 
