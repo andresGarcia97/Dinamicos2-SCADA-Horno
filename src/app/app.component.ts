@@ -10,13 +10,16 @@ export class AppComponent {
   title = 'hornoDinamicos2';
 
   // variables globales
-  voltaje = 2;
+  voltaje = 1;
   ts = 1;
+  // 1/100 segundo
+  tiempoAlentamiento = 10;
+  maximoIteraciones = 500;
 
   // variables primer ejercicio, sin disipacion
   tituloGraficaBasica = 'grafica1';
   tiempo1 = 0;
-  resultado1 = 0;
+  temperatura1 = 0;
   graficaBasica: any;
   resultados = [];
   datos = [];
@@ -35,7 +38,7 @@ export class AppComponent {
   tiempo2 = 0;
   referencia2 = 1;
   interval2 = null;
-  resultado2 = 0;
+  temperatura2 = 0;
   datos2 = [];
   graficaDisipacion: any;
   temperaturaRedondeo = 0;
@@ -120,26 +123,37 @@ export class AppComponent {
     });
   }
 
+  private temperaturaMinima(temperatura: number): number {
+    if (temperatura <= 0) {
+      return 0;
+    }
+    return temperatura;
+  }
+
   private insercionDatosBasico(): void {
-    this.datos.push(new DataChart(this.tiempo1, this.resultado1));
-    this.resultados.push(this.resultado1);
+    this.datos.push(new DataChart(this.tiempo1, this.temperatura1));
+    this.resultados.push(this.temperatura1);
     this.graficaBasica.update();
   }
 
   private insercionDatosDisipacion(): void {
-    this.temperaturaRedondeo = Math.round(this.resultado2);
-    this.salidaSistema.push(this.resultado2);
+    this.temperaturaRedondeo = Math.round(this.temperatura2);
+    this.salidaSistema.push(this.temperatura2);
     this.u.push(this.voltaje);
-    this.datos2.push(new DataChart(this.tiempo2, this.resultado2));
+    this.datos2.push(new DataChart(this.tiempo2, this.temperatura2));
     this.graficaDisipacion.update();
   }
 
   public apagarBasico(): void {
     clearInterval(this.interval1);
+    this.interval1 = null;
+    return;
   }
 
   public apagarDisipacion(): void {
     clearInterval(this.interval2);
+    this.interval2 = null;
+    return;
   }
 
   public pausarBasico(): void {
@@ -155,23 +169,24 @@ export class AppComponent {
     this.datos = [];
     this.resultados = [];
     this.graficarBasica();
-    this.resultado1 = 0;
-    const size = 400;
+    this.temperatura1 = 0;
     this.tiempo1 = 0;
-    this.resultado1 = this.V(this.voltaje) * this.ts * 0  + this.T(0);
-    this.resultados.push(this.resultado1);
+    this.temperatura1 = this.V(this.voltaje) * this.ts * 0 + this.T(0);
+    this.resultados.push(this.temperatura1);
     this.insercionDatosBasico();
     this.tiempo1 = 1;
     this.interval1 = setInterval(() => {
       if (this.pausadoBasico) {
-        this.resultado1 = this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo1 - 1]);
+        // formula
+        this.temperatura1 = this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo1 - 1]);
+        this.temperatura1 = this.temperaturaMinima(this.temperatura1);
         this.insercionDatosBasico();
         this.tiempo1++;
-        if (this.tiempo1 === size) {
+        if (this.tiempo1 === this.maximoIteraciones) {
           this.apagarBasico();
         }
       }
-    }, this.ts);
+    }, this.ts * this.tiempoAlentamiento);
   }
 
   public hornoDisipacion(): void {
@@ -185,19 +200,19 @@ export class AppComponent {
     this.datos2.push(new DataChart(this.tiempo2 - 2, this.salidaSistema[this.tiempo2 - 2]));
     this.datos2.push(new DataChart(this.tiempo2 - 1, this.salidaSistema[this.tiempo2 - 1]));
     this.graficarDisipacion();
-    const size = 500;
     this.interval2 = setInterval(() => {
       if (this.pausadoDisipasion) {
         // formula
-        this.resultado2 = this.num1 * this.u[this.tiempo2 - 1] + this.num2 * this.u[this.tiempo2 - 2] +
+        this.temperatura2 = this.num1 * this.u[this.tiempo2 - 1] + this.num2 * this.u[this.tiempo2 - 2] +
           this.den1 * this.salidaSistema[this.tiempo2 - 1] + this.den2 * this.salidaSistema[this.tiempo2 - 2];
+        this.temperatura2 = this.temperaturaMinima(this.temperatura2);
         this.insercionDatosDisipacion();
         this.tiempo2++;
-        if (this.tiempo2 === size) {
+        if (this.tiempo2 === this.maximoIteraciones) {
           this.apagarDisipacion();
         }
       }
-    }, this.ts);
+    }, this.ts * this.tiempoAlentamiento);
   }
 }
 

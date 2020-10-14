@@ -1,29 +1,46 @@
 <body>
-  
-  <div class="container"> 
-    <h2 class="text-muted title text-muted">Ingrese los Valores</h2>
-    <div class="form-group">
-      <input type="number" id="txtVoltaje" class="input" placeholder="Voltaje" required>
+
+  <div class="container">
+    <br />
+    <div class="jumbotron nopadding">
+      <div class="row my-auto mx-auto">
+        <div class="col-4">
+          <div class="header clearfix sub-container">
+            <h2 class="text-muted title text-center">Ingreso de valores</h2>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="txtVoltaje">Voltaje</label>
+            <br>
+            <input type="number" id="txtVoltaje" class="input" placeholder="Voltaje" required [(ngModel)]="voltaje">
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="txtTs">Ts</label>
+            <br>
+            <input type="number" id="txtTs" class="input" placeholder="Ts" required [(ngModel)]="ts" min="1">
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <input type="number" id="txtTemperatura" class="input" placeholder="Temperatura" required>
-    </div>
-    <button type="submit" id="btnGuardar" class="btn btn-lg btn-primary">Guardar</button>
+    <br />
     <div class="header clearfix sub-container">
       <h2 class="text-muted title text-center">Horno sin Disipación</h2>
     </div>
-    <br />
     <div class="row nopadding">
       <div class="jumbotron col-lg-4">
         <div class="row marketing">
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar Reiniciar</button>
+            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar
+              Reiniciar</button>
           </div>
           <div class="col-4">
             <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarBasico()">Apagar</button>
           </div>
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasico()">Pausar  Reanudar</button>
+            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasico()">Pausar Reanudar</button>
           </div>
         </div>
         <br>
@@ -38,7 +55,7 @@
           </thead>
           <tbody>
             <th scope="col">{{tiempo1}}</th>
-            <th scope="col">{{resultado1}}</th>
+            <th scope="col">{{temperatura1}}</th>
             <th scope="col">{{voltaje}}</th>
             <th scope="col">{{ts}}</th>
           </tbody>
@@ -56,14 +73,15 @@
       <div class="jumbotron col-lg-4">
         <div class="row marketing">
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success"
-              (click)="hornoDisipacion()">Iniciar Reiniciar</button>
+            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoDisipacion()">Iniciar
+              Reiniciar</button>
           </div>
           <div class="col-4">
             <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarDisipacion()">Apagar</button>
           </div>
           <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarDisipacion()">Pausar Reanudar</button>
+            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarDisipacion()">Pausar
+              Reanudar</button>
           </div>
         </div>
         <br>
