@@ -55,11 +55,17 @@
           </thead>
           <tbody>
             <th scope="col">{{tiempo1}}</th>
-            <th scope="col">{{temperatura1}}</th>
+            <th scope="col">{{temperaturaBasico}}</th>
             <th scope="col">{{voltaje}}</th>
             <th scope="col">{{ts}}</th>
           </tbody>
         </table>
+        <div class="row marketing nopadding">
+          <div class="col-8">
+            <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoBasico'
+              (click)="descargarArchivoSinDisipacion()">Descargar Datos</button>
+          </div>
+        </div>
       </div>
       <div class="col-lg-8 nopadding">
         <canvas [id]="tituloGraficaBasica"></canvas>
@@ -101,11 +107,52 @@
             <th scope="col">{{ts}}</th>
           </tbody>
         </table>
+        <div class="row marketing nopadding">
+          <div class="col-8">
+            <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoDisipasion'
+              (click)="descargarArchivoConDisipacion()">Descargar Datos</button>
+          </div>
+        </div>
       </div>
       <div class="col-lg-8 nopadding">
         <canvas [id]="titulograficaDisipacion"></canvas>
       </div>
     </div>
+    <footer>
+      <div class="jumbotron nopadding">
+        <div class="row">
+          <div class="col-4">
+            <div class="header clearfix sub-container">
+              <h2 class="text-muted title text-center">Librerias usadas: </h2>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="header clearfix sub-container">
+              <h2>
+                <a href="https://www.chartjs.org/" target="_blank"
+                  class="text-muted title text-center text-decoration-none">Chart.js</a>
+              </h2>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="header clearfix sub-container">
+              <h2>
+                <a href="https://sheetjs.com/" target="_blank"
+                  class="text-muted title text-center text-decoration-none">SheetJS</a>
+              </h2>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="header clearfix sub-container">
+              <h2>
+                <a href="https://getbootstrap.com/" target="_blank"
+                  class="text-muted title text-center text-decoration-none">Boostrap</a>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 </body>
 <router-outlet></router-outlet>
