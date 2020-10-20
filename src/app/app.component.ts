@@ -14,7 +14,7 @@ export class AppComponent {
   voltaje = 1;
   ts = 1;
   tiempoAlentamiento = 100;
-  maximoIteraciones = 500;
+  referencia = 100;
 
   // variables primer ejercicio, sin disipacion
   tituloGraficaBasica = 'grafica1';
@@ -26,6 +26,7 @@ export class AppComponent {
   intervalBasico = null;
   pausadoBasico = true;
   apagadoBasico = true;
+  mostrarBasico = false;
 
   // variables segundo ejercicio, con disipacion
   titulograficaDisipacion = 'grafica2';
@@ -37,7 +38,6 @@ export class AppComponent {
   salidaSistema = [0, 0, 0, 0];
   u = [this.voltaje, this.voltaje, this.voltaje, this.voltaje];
   tiempo2 = 0;
-  referencia2 = 1;
   intervalDisipacion = null;
   temperaturaDisipacion = 0;
   datosDisipacion = [];
@@ -45,6 +45,24 @@ export class AppComponent {
   temperaturaRedondeo = 0;
   pausadoDisipasion = true;
   apagadoDisipasion = true;
+  mostrarDisipasion = false;
+
+  // variables horno basico con controlP
+  tituloGraficaBasicaControl = 'grafica3';
+  tiempo3 = 0;
+  kControl = 10;
+  temperaturaBasicoControl = 0;
+  voltajeInternoControl = 0;
+  graficaBasicaControl: any;
+  resultadosControl = [];
+  datosBasicoControl = [];
+  datosReferenciaBasicoControl = [];
+  intervalBasicoControl = null;
+  pausadoBasicoControl = true;
+  apagadoBasicoControl = true;
+  mostrarBasicoControl = true;
+
+  // funciones horno basico
 
   private T(temperatura: number): number {
     return temperatura;
@@ -90,6 +108,60 @@ export class AppComponent {
     });
   }
 
+  private insercionDatosBasico(): void {
+    this.datosBasico.push(new DataChart(this.tiempo1, this.temperaturaBasico));
+    this.resultados.push(this.temperaturaBasico);
+    this.graficaBasica.update();
+  }
+
+  public apagarBasico(): void {
+    clearInterval(this.intervalBasico);
+    this.pausadoBasico = false;
+    this.intervalBasico = null;
+    this.apagadoBasico = false;
+    return;
+  }
+
+  public pausarBasico(): void {
+    this.pausadoBasico = !this.pausadoBasico;
+  }
+
+  public mostrarHornoBasico(): void {
+    this.mostrarBasico = !this.mostrarBasico;
+  }
+
+  public hornoBasico(): void {
+    this.apagadoBasico = true;
+    this.pausadoBasico = true;
+    this.datosBasico = [];
+    this.resultados = [];
+    this.graficarBasica();
+    this.temperaturaBasico = 0;
+    this.tiempo1 = 0;
+    this.temperaturaBasico = this.V(this.voltaje) * this.ts * 0 + this.T(0);
+    this.resultados.push(this.temperaturaBasico);
+    this.insercionDatosBasico();
+    this.tiempo1 = 1;
+    this.intervalBasico = setInterval(() => {
+      if (this.pausadoBasico) {
+        // formula
+        this.temperaturaBasico = this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo1 - 1]);
+        this.temperaturaBasico = this.temperaturaMinima(this.temperaturaBasico);
+        this.insercionDatosBasico();
+        this.tiempo1++;
+        if (this.temperaturaBasico === this.referencia) {
+          this.apagarBasico();
+        }
+      }
+    }, this.ts * this.tiempoAlentamiento);
+  }
+
+  public descargarArchivoSinDisipacion(): void {
+    this.crearDocumentoExcel(this.datosBasico, '-sin-disipacion');
+  }
+
+  // funciones horno con disipacion
+
   private graficarDisipacion(): void {
     this.graficaDisipacion = new Chart(this.titulograficaDisipacion, {
       type: 'scatter',
@@ -126,33 +198,11 @@ export class AppComponent {
     });
   }
 
-  private temperaturaMinima(temperatura: number): number {
-    if (temperatura <= 0) {
-      return 0;
-    }
-    return temperatura;
-  }
-
-  private insercionDatosBasico(): void {
-    this.datosBasico.push(new DataChart(this.tiempo1, this.temperaturaBasico));
-    this.resultados.push(this.temperaturaBasico);
-    this.graficaBasica.update();
-  }
-
   private insercionDatosDisipacion(): void {
-    this.temperaturaRedondeo = Math.round(this.temperaturaDisipacion);
     this.salidaSistema.push(this.temperaturaDisipacion);
     this.u.push(this.voltaje);
     this.datosDisipacion.push(new DataChart(this.tiempo2, this.temperaturaDisipacion));
     this.graficaDisipacion.update();
-  }
-
-  public apagarBasico(): void {
-    clearInterval(this.intervalBasico);
-    this.pausadoBasico = false;
-    this.intervalBasico = null;
-    this.apagadoBasico = false;
-    return;
   }
 
   public apagarDisipacion(): void {
@@ -163,38 +213,12 @@ export class AppComponent {
     return;
   }
 
-  public pausarBasico(): void {
-    this.pausadoBasico = !this.pausadoBasico;
-  }
-
   public pausarDisipacion(): void {
     this.pausadoDisipasion = !this.pausadoDisipasion;
   }
 
-  public hornoBasico(): void {
-    this.apagadoBasico = true;
-    this.pausadoBasico = true;
-    this.datosBasico = [];
-    this.resultados = [];
-    this.graficarBasica();
-    this.temperaturaBasico = 0;
-    this.tiempo1 = 0;
-    this.temperaturaBasico = this.V(this.voltaje) * this.ts * 0 + this.T(0);
-    this.resultados.push(this.temperaturaBasico);
-    this.insercionDatosBasico();
-    this.tiempo1 = 1;
-    this.intervalBasico = setInterval(() => {
-      if (this.pausadoBasico) {
-        // formula
-        this.temperaturaBasico = this.V(this.voltaje) * this.ts + this.T(this.resultados[this.tiempo1 - 1]);
-        this.temperaturaBasico = this.temperaturaMinima(this.temperaturaBasico);
-        this.insercionDatosBasico();
-        this.tiempo1++;
-        if (this.tiempo1 === this.maximoIteraciones) {
-          this.apagarBasico();
-        }
-      }
-    }, this.ts * this.tiempoAlentamiento);
+  public mostrarHornoDisipacion(): void {
+    this.mostrarDisipasion = !this.mostrarDisipasion;
   }
 
   public hornoDisipacion(): void {
@@ -217,11 +241,140 @@ export class AppComponent {
         this.temperaturaDisipacion = this.temperaturaMinima(this.temperaturaDisipacion);
         this.insercionDatosDisipacion();
         this.tiempo2++;
-        if (this.tiempo2 === this.maximoIteraciones) {
+        this.temperaturaRedondeo = Math.round(this.temperaturaDisipacion);
+        if (this.temperaturaRedondeo === this.referencia) {
           this.apagarDisipacion();
         }
       }
     }, this.ts * this.tiempoAlentamiento);
+  }
+
+  public descargarArchivoConDisipacion(): void {
+    this.crearDocumentoExcel(this.datosDisipacion, '-con-disipacion');
+  }
+
+  // funciones horno basico con control P
+
+  private graficarBasicaControl(): void {
+    this.graficaBasicaControl = new Chart(this.tituloGraficaBasicaControl, {
+      type: 'scatter',
+      data: {
+        datasets: [
+          {
+            label: 'Temperatura sin Disipación y control P',
+            showLine: true,
+            backgroundColor: 'rgba(48, 107, 52, 0.6)',
+            pointBorderColor: 'rgba(0, 0, 0)',
+            pointBackgroundColor: 'rgba(255, 255, 255)',
+            borderColor: 'rgba(0, 0, 0)',
+            data: this.datosBasicoControl,
+          },
+          {
+            label: 'Referencia',
+            showLine: false,
+            pointBorderColor: 'rgba(0, 0, 0)',
+            pointBackgroundColor: 'rgba(255, 255, 255)',
+            borderColor: 'rgba(0, 0, 0)',
+            data: this.datosReferenciaBasicoControl,
+          }
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Tiempo'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Temperatura'
+            }
+          }]
+        }
+      }
+    });
+  }
+
+  private insercionDatosBasicoControl(): void {
+    this.datosReferenciaBasicoControl.push(new DataChart(this.tiempo3, this.referencia));
+    this.datosBasicoControl.push(new DataChart(this.tiempo3, this.temperaturaBasicoControl));
+    this.resultadosControl.push(this.temperaturaBasicoControl);
+    this.graficaBasicaControl.update();
+  }
+
+  public apagarBasicoControl(): void {
+    clearInterval(this.intervalBasicoControl);
+    this.pausadoBasicoControl = false;
+    this.intervalBasicoControl = null;
+    this.apagadoBasicoControl = false;
+    return;
+  }
+
+  public pausarBasicoControl(): void {
+    this.pausadoBasicoControl = !this.pausadoBasicoControl;
+  }
+
+  public mostrarHornoBasicoControl(): void {
+    this.mostrarBasicoControl = !this.mostrarBasicoControl;
+  }
+
+  public hornoBasicoConControl(): void {
+    this.voltajeInternoControl = 0;
+    this.voltajeInternoControl = this.voltaje.valueOf();
+    this.apagadoBasicoControl = true;
+    this.pausadoBasicoControl = true;
+    this.datosBasicoControl = [];
+    this.datosReferenciaBasicoControl = [];
+    this.resultadosControl = [];
+    this.graficarBasicaControl();
+    this.temperaturaBasicoControl = 0;
+    this.tiempo3 = 0;
+    this.temperaturaBasicoControl = this.V(this.voltajeInternoControl) * this.ts * 0 + this.T(0);
+    this.resultadosControl.push(this.temperaturaBasicoControl);
+    this.insercionDatosBasicoControl();
+    this.tiempo3 = 1;
+    this.intervalBasicoControl = setInterval(() => {
+      if (this.pausadoBasicoControl) {
+        // formula
+        this.temperaturaBasicoControl = this.V(this.voltajeInternoControl) * this.ts + this.T(this.resultadosControl[this.tiempo3 - 1]);
+        this.temperaturaBasicoControl = this.temperaturaMinima(this.temperaturaBasicoControl);
+        this.insercionDatosBasicoControl();
+        this.tiempo3++;
+        this.validarReferennciaBasicoControl();
+      }
+    }, this.ts * this.tiempoAlentamiento);
+  }
+
+  private validarReferennciaBasicoControl(): void {
+    if (this.temperaturaBasicoControl > this.referencia) {
+      this.voltajeInternoControl = this.voltajeInternoControl - this.kControl;
+    }
+    else if (this.temperaturaBasicoControl < this.referencia) {
+      this.voltajeInternoControl = this.voltajeInternoControl + this.kControl;
+    }
+    else if (this.temperaturaBasicoControl === this.referencia) {
+      this.apagarBasicoControl();
+    }
+    return;
+  }
+
+  public descargarArchivoSinDisipacionControl(): void {
+    this.crearDocumentoExcel(this.datosBasicoControl, '-sin-disipacion-controlP');
+  }
+
+  // funciones transversales
+
+  private temperaturaMinima(temperatura: number): number {
+    if (temperatura <= 0) {
+      return 0;
+    }
+    return temperatura;
   }
 
   private crearDocumentoExcel(datos: any[], nombre: string): void {
@@ -259,13 +412,4 @@ export class AppComponent {
     saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), nombreArchivoExcel.concat('.xlsx'));
   }
 
-  public descargarArchivoSinDisipacion(): void {
-    this.crearDocumentoExcel(this.datosBasico, '-sin-disipacion');
-  }
-
-  public descargarArchivoConDisipacion(): void {
-    this.crearDocumentoExcel(this.datosDisipacion, '-con-disipacion');
-  }
-
 }
-
