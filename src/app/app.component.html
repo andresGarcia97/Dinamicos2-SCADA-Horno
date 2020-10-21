@@ -1,5 +1,4 @@
 <body>
-
   <div class="container">
     <br />
     <div class="jumbotron nopadding">
@@ -33,172 +32,234 @@
         </div>
       </div>
     </div>
+
+    <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active text-dark" id="sin-tab" data-toggle="tab" href="#sin" role="tab" aria-controls="sin"
+          aria-selected="true">Sin Control</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" id="con-tab" data-toggle="tab" href="#con" role="tab" aria-controls="con"
+          aria-selected="true">Con Control</a>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+      <br />
+      <div class="tab-pane fade show active" id="sin" role="tabpanel" aria-labelledby="sin-tab">
+        <div class="header clearfix sub-container">
+          <div class="row no nopadding">
+            <div class="col-lg">
+              <h2 class="text-muted title text-center">Horno sin Disipación</h2>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="row nopadding">
+          <div class="jumbotron col-lg-4">
+            <div class="row marketing">
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar
+                  Reiniciar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarBasico()">Apagar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasico()">Pausar
+                  Reanudar</button>
+              </div>
+            </div>
+            <br>
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">T</th>
+                  <th scope="col">Temperatura</th>
+                  <th scope="col">V</th>
+                  <th scope="col">Ts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <th scope="col">{{tiempo1}}</th>
+                <th scope="col">{{temperaturaBasico}}</th>
+                <th scope="col">{{voltaje}}</th>
+                <th scope="col">{{ts}}</th>
+              </tbody>
+            </table>
+            <div class="row marketing nopadding">
+              <div class="col-8">
+                <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoBasico'
+                  (click)="descargarArchivoSinDisipacion()">Descargar Datos</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 nopadding">
+            <canvas [id]="tituloGraficaBasica"></canvas>
+          </div>
+        </div>
+
+        <div class="header clearfix sub-container">
+          <div class="row nopadding">
+            <div class="col-lg">
+              <h2 class="text-muted title text-center">Horno con Disipación</h2>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="row nopadding">
+          <div class="jumbotron col-lg-4">
+            <div class="row marketing">
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoDisipacion()">Iniciar
+                  Reiniciar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-danger"
+                  (click)="apagarDisipacion()">Apagar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarDisipacion()">Pausar
+                  Reanudar</button>
+              </div>
+            </div>
+            <br>
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">T</th>
+                  <th scope="col">Temperatura</th>
+                  <th scope="col">V</th>
+                </tr>
+              </thead>
+              <tbody>
+                <th scope="col">{{tiempo2}}</th>
+                <th scope="col">{{temperaturaRedondeo}}</th>
+                <th scope="col">{{voltaje}}</th>
+              </tbody>
+            </table>
+            <div class="row marketing nopadding">
+              <div class="col-8">
+                <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoDisipasion'
+                  (click)="descargarArchivoConDisipacion()">Descargar Datos</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 nopadding">
+            <canvas [id]="titulograficaDisipacion"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="con" role="tabpanel" aria-labelledby="con-tab">
+        <div class="header clearfix sub-container">
+          <div class="row no nopadding">
+            <div class="col-lg">
+              <h2 class="text-muted title text-center">Horno sin Disipación</h2>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="row nopadding">
+          <div class="jumbotron col-lg-4">
+            <div class="row marketing">
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasicoConControl()">Iniciar
+                  Reiniciar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-danger"
+                  (click)="apagarBasicoControl()">Apagar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasicoControl()">Pausar
+                  Reanudar</button>
+              </div>
+            </div>
+            <br>
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">T</th>
+                  <th scope="col">Temperatura</th>
+                  <th scope="col">V</th>
+                  <th scope="col">Ts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <th scope="col">{{tiempo3}}</th>
+                <th scope="col">{{temperaturaBasicoControl}}</th>
+                <th scope="col">{{voltajeInternoControl}}</th>
+                <th scope="col">{{ts}}</th>
+              </tbody>
+            </table>
+            <div class="row marketing nopadding">
+              <div class="col-8">
+                <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoBasicoControl'
+                  (click)="descargarArchivoSinDisipacionControl()">Descargar Datos</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 nopadding">
+            <canvas [id]="tituloGraficaBasicaControl"></canvas>
+          </div>
+        </div>
+
+        <div class="header clearfix sub-container">
+          <div class="row nopadding">
+            <div class="col-lg">
+              <h2 class="text-muted title text-center">Horno con Disipación</h2>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="row nopadding">
+          <div class="jumbotron col-lg-4">
+            <div class="row marketing">
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoDisipacionControl()">Iniciar
+                  Reiniciar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-danger"
+                  (click)="apagarDisipacionControl()">Apagar</button>
+              </div>
+              <div class="col-4">
+                <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarDisipacionControl()">Pausar
+                  Reanudar</button>
+              </div>
+            </div>
+            <br>
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">T</th>
+                  <th scope="col">Temperatura</th>
+                  <th scope="col">V</th>
+                </tr>
+              </thead>
+              <tbody>
+                <th scope="col">{{tiempo4}}</th>
+                <th scope="col">{{temperaturaRedondeoControl}}</th>
+                <th scope="col">{{voltajeInternoDisipacion}}</th>
+              </tbody>
+            </table>
+            <div class="row marketing nopadding">
+              <div class="col-8">
+                <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoDisipasionControl'
+                  (click)="descargarArchivoConDisipacionControl()">Descargar Datos</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 nopadding">
+            <canvas [id]="titulograficaDisipacionControl"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <br />
-    <div class="header clearfix sub-container">
-      <div class="row no nopadding">
-        <div class="col-lg-6">
-          <h2 class="text-muted title text-center">Horno sin Disipación</h2>
-        </div>
-        <div class="col-lg-6">
-          <button type="button" id="btnEnceder" class="btn btn-success"
-            (click)="mostrarHornoBasico()">Mostrar/Ocultar</button>
-        </div>
-      </div>
-    </div>
-    <br>
-    <div class="row nopadding" *ngIf="mostrarBasico">
-      <div class="jumbotron col-lg-4">
-        <div class="row marketing">
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasico()">Iniciar
-              Reiniciar</button>
-          </div>
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarBasico()">Apagar</button>
-          </div>
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasico()">Pausar Reanudar</button>
-          </div>
-        </div>
-        <br>
-        <table class="table">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">T</th>
-              <th scope="col">Temperatura</th>
-              <th scope="col">V</th>
-              <th scope="col">Ts</th>
-            </tr>
-          </thead>
-          <tbody>
-            <th scope="col">{{tiempo1}}</th>
-            <th scope="col">{{temperaturaBasico}}</th>
-            <th scope="col">{{voltaje}}</th>
-            <th scope="col">{{ts}}</th>
-          </tbody>
-        </table>
-        <div class="row marketing nopadding">
-          <div class="col-8">
-            <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoBasico'
-              (click)="descargarArchivoSinDisipacion()">Descargar Datos</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-8 nopadding">
-        <canvas [id]="tituloGraficaBasica"></canvas>
-      </div>
-    </div>
-    <br>
-    <div class="header clearfix sub-container">
-      <div class="row nopadding">
-        <div class="col-lg-6">
-          <h2 class="text-muted title text-center">Horno con Disipación</h2>
-        </div>
-        <div class="col-lg-6">
-          <button type="button" id="btnEnceder" class="btn btn-success"
-            (click)="mostrarHornoDisipacion()">Mostrar/Ocultar</button>
-        </div>
-      </div>
-    </div>
-    <br />
-    <div class="row nopadding" *ngIf="mostrarDisipasion">
-      <div class="jumbotron col-lg-4">
-        <div class="row marketing">
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoDisipacion()">Iniciar
-              Reiniciar</button>
-          </div>
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarDisipacion()">Apagar</button>
-          </div>
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarDisipacion()">Pausar
-              Reanudar</button>
-          </div>
-        </div>
-        <br>
-        <table class="table">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">T</th>
-              <th scope="col">Temperatura</th>
-              <th scope="col">V</th>
-            </tr>
-          </thead>
-          <tbody>
-            <th scope="col">{{tiempo2}}</th>
-            <th scope="col">{{temperaturaRedondeo}}</th>
-            <th scope="col">{{voltaje}}</th>
-          </tbody>
-        </table>
-        <div class="row marketing nopadding">
-          <div class="col-8">
-            <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoDisipasion'
-              (click)="descargarArchivoConDisipacion()">Descargar Datos</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-8 nopadding">
-        <canvas [id]="titulograficaDisipacion"></canvas>
-      </div>
-    </div>
-    <br />
-    <div class="header clearfix sub-container">
-      <div class="row no nopadding">
-        <div class="col-lg-6">
-          <h2 class="text-muted title text-center">Horno sin Disipación con Control</h2>
-        </div>
-        <div class="col-lg-6">
-          <button type="button" id="btnEnceder" class="btn btn-success"
-            (click)="mostrarHornoBasicoControl()">Mostrar/Ocultar</button>
-        </div>
-      </div>
-    </div>
-    <br>
-    <div class="row nopadding" *ngIf="mostrarBasicoControl">
-      <div class="jumbotron col-lg-4">
-        <div class="row marketing">
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-success" (click)="hornoBasicoConControl()">Iniciar
-              Reiniciar</button>
-          </div>
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-danger" (click)="apagarBasicoControl()">Apagar</button>
-          </div>
-          <div class="col-4">
-            <button type="button" id="btnEnceder" class="btn btn-info" (click)="pausarBasicoControl()">Pausar
-              Reanudar</button>
-          </div>
-        </div>
-        <br>
-        <table class="table">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">T</th>
-              <th scope="col">Temperatura</th>
-              <th scope="col">V</th>
-              <th scope="col">Ts</th>
-            </tr>
-          </thead>
-          <tbody>
-            <th scope="col">{{tiempo3}}</th>
-            <th scope="col">{{temperaturaBasicoControl}}</th>
-            <th scope="col">{{voltajeInternoControl}}</th>
-            <th scope="col">{{ts}}</th>
-          </tbody>
-        </table>
-        <div class="row marketing nopadding">
-          <div class="col-8">
-            <button type="button" id="btnDescargar" class="btn btn-success" [disabled]='apagadoBasicoControl'
-              (click)="descargarArchivoSinDisipacionControl()">Descargar Datos</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-8 nopadding">
-        <canvas [id]="tituloGraficaBasicaControl"></canvas>
-      </div>
-    </div>
-    <br>
+
     <footer class="relative-bottom">
       <div class="jumbotron nopadding">
         <div class="row">
