@@ -85,7 +85,6 @@ export class AppComponent {
   // variables horno basico con controlP e indicadores
   tituloGraficaBasicaControlIndicadores = 'grafica5';
   tiempo5 = 0;
-  kControlIndicadores = 10;
   temperaturaBasicoControlIndicadores = 0;
   voltajeInternoControlIndicadores = this.voltaje.valueOf();
   graficaBasicaControlIndicadores: any;
@@ -109,7 +108,6 @@ export class AppComponent {
   uControlIndicadores = [this.voltajeInternoDisipacionIndicadores, this.voltajeInternoDisipacionIndicadores,
   this.voltajeInternoDisipacionIndicadores, this.voltajeInternoDisipacionIndicadores];
   tiempo6 = 0;
-  kDisipacionIndicadores = 10;
   intervalDisipacionControlIndicadores = null;
   temperaturaDisipacionControlIndicadores = 0;
   datosDisipacionControlIndicadores = [];
@@ -119,6 +117,11 @@ export class AppComponent {
   pausadoDisipasionControlIndicadores = true;
   apagadoDisipasionControlIndicadores = true;
   errorDisipacionControlIndicadores = 0;
+  mpDisipacion = 0;
+  poDisipacion = 0;
+  vfDisipacion = 0;
+  tssDisipacion = 0;
+  essDisipacion = 0;
 
   // funciones horno basico
 
@@ -697,6 +700,11 @@ export class AppComponent {
     this.datosReferenciaDisipacionControlIndicadores = [];
     this.tiempo6 = 4;
     this.errorDisipacionControlIndicadores = 0;
+    this.mpDisipacion = 0;
+    this.poDisipacion = 0;
+    this.tssDisipacion = 0;
+    this.essDisipacion = 0;
+    this.vfDisipacion = 0;
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 4, this.referencia));
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 3, this.referencia));
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 2, this.referencia));
@@ -717,23 +725,63 @@ export class AppComponent {
         this.tiempo6++;
         this.temperaturaRedondeoControlIndicadores = Math.round(this.temperaturaDisipacionControlIndicadores);
         this.validarReferennciaDisipacionControlIndicadores();
+        this.revisarMP();
       }
     }, this.ts * this.tiempoAlentamiento);
   }
 
   private validarReferennciaDisipacionControlIndicadores(): void {
-    this.errorDisipacionControlIndicadores = Math.abs(this.referencia - this.temperaturaRedondeoControlIndicadores);
+    this.errorDisipacionControlIndicadores = this.referencia - this.temperaturaRedondeoControlIndicadores;
     if (this.temperaturaRedondeoControlIndicadores > this.referencia) {
       this.voltajeInternoDisipacionIndicadores = this.voltajeInternoDisipacionIndicadores * this.k * -1;
+      if (this.voltajeInternoDisipacionIndicadores > 0) {
+        this.voltajeInternoDisipacionIndicadores = this.voltajeInternoDisipacionIndicadores * -1;
+      }
+      if (this.tiempo6 % 50 === 0) {
+        this.voltajeInternoDisipacionIndicadores--;
+      }
     }
     if (this.temperaturaRedondeoControlIndicadores < this.referencia) {
       this.voltajeInternoDisipacionIndicadores =
-        this.k * Math.abs(this.errorDisipacionControlIndicadores);
+        this.k * this.errorDisipacionControlIndicadores;
     }
     else if (this.temperaturaRedondeoControlIndicadores === this.referencia || this.tiempo6 === this.maximoIteraciones) {
       this.apagarDisipacionControlIndicadores();
+      this.calcularPo();
+      this.calcularTSS();
     }
     return;
+  }
+
+  private revisarMP(): void {
+    const valorActual = this.salidaSistemaControlIndicadores[this.tiempo6 - 1];
+    const valorAnterior = this.salidaSistemaControlIndicadores[this.tiempo6 - 2];
+    const maximoAlcanzado = this.mpDisipacion.valueOf();
+    if (valorActual > valorAnterior && valorActual > maximoAlcanzado) {
+      this.mpDisipacion = Math.round(valorActual);
+    }
+  }
+
+  private calcularPo(): void {
+    this.vfDisipacion = this.salidaSistemaControlIndicadores[this.tiempo6 - 1];
+    this.vfDisipacion = Math.round(this.vfDisipacion);
+    this.poDisipacion = (this.mpDisipacion - this.vfDisipacion) / this.vfDisipacion;
+    this.poDisipacion = Math.round((this.poDisipacion + Number.EPSILON) * 100) / 100;
+  }
+
+  private calcularTSS(): void {
+    const vfMayor = this.vfDisipacion + this.vfDisipacion * 0.02;
+    const vfMenor = this.vfDisipacion - this.vfDisipacion * 0.02;
+    this.datosDisipacionControlIndicadores.forEach(element => {
+      if (element.y < vfMayor && element.y >= vfMenor) {
+        this.tssDisipacion = element.x;
+        this.calcularESS();
+      }
+    });
+  }
+
+  private calcularESS(): void {
+    this.essDisipacion = this.referencia - this.vfDisipacion;
   }
 
   public descargarArchivoConDisipacionControlIndicadores(): void {
