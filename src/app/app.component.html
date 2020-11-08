@@ -3,31 +3,39 @@
     <br />
     <div class="jumbotron nopadding">
       <div class="row my-auto mx-auto">
-        <div class="col-3">
+        <div class="col">
           <div class="header clearfix sub-container">
-            <h2 class="text-muted title text-center">Ingreso de valores</h2>
+            <h2 class="text-muted title text-center">valores</h2>
           </div>
         </div>
-        <div class="col-3">
+        <div class="col">
           <div class="form-group">
             <label for="txtVoltaje">Voltaje</label>
             <br>
             <input type="number" id="txtVoltaje" class="input" placeholder="Voltaje" required [(ngModel)]="voltaje">
           </div>
         </div>
-        <div class="col-3">
+        <div class="col">
           <div class="form-group">
             <label for="txtTs">Ts</label>
             <br>
             <input type="number" id="txtTs" class="input" placeholder="Ts" required [(ngModel)]="ts" min="1">
           </div>
         </div>
-        <div class="col-3">
+        <div class="col">
           <div class="form-group">
             <label for="txtTs">Referencia</label>
             <br>
             <input type="number" id="txtTs" class="input" placeholder="Referencia" required [(ngModel)]="referencia"
-              min="10">
+              min="50">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="txtTs">Temp Ambiente</label>
+            <br>
+            <input type="number" id="txtTs" class="input" placeholder="Temperatura Ambiente" required
+              [(ngModel)]="tempAmbiental">
           </div>
         </div>
       </div>
@@ -376,10 +384,14 @@
               </tbody>
             </table>
             <div class="row marketing nopadding">
-              <div class="col-8">
+              <div class="col-6 nopadding">
                 <button type="button" id="btnDescargar" class="btn btn-success"
                   [disabled]='apagadoDisipasionControlIndicadores'
                   (click)="descargarArchivoConDisipacionControlIndicadores()">Descargar Datos</button>
+              </div>
+              <div class="col-6 nopadding">
+                <button type="button" id="btnDescargar" class="btn btn-danger"
+                  (click)="interrumpirTemp()">Pertubar</button>
               </div>
             </div>
           </div>

@@ -15,7 +15,7 @@ export class AppComponent {
   ts = 1;
   tiempoAlentamiento = 10;
   referencia = 100;
-  maximoIteraciones = 1000;
+  maximoIteraciones = 1500;
   k = 1;
 
   // variables primer ejercicio, sin disipacion
@@ -122,6 +122,9 @@ export class AppComponent {
   vfDisipacion = 0;
   tssDisipacion = 0;
   essDisipacion = 0;
+  tempAmbiental = 10;
+  interrump = false;
+  numberInterrupcion = 0;
 
   // funciones horno basico
 
@@ -555,14 +558,12 @@ export class AppComponent {
       }
     });
   }
-
   private insercionDatosBasicoControlIndicadores(): void {
     this.datosReferenciaBasicoControlIndicadores.push(new DataChart(this.tiempo5, this.referencia));
     this.datosBasicoControlIndicadores.push(new DataChart(this.tiempo5, this.temperaturaBasicoControlIndicadores));
     this.resultadosControlIndicadores.push(this.temperaturaBasicoControlIndicadores);
     this.graficaBasicaControlIndicadores.update();
   }
-
   public apagarBasicoControlIndicadores(): void {
     clearInterval(this.intervalBasicoControlIndicadores);
     this.pausadoBasicoControlIndicadores = false;
@@ -570,11 +571,9 @@ export class AppComponent {
     this.apagadoBasicoControlIndicadores = false;
     return;
   }
-
   public pausarBasicoControlIndicadores(): void {
     this.pausadoBasicoControlIndicadores = !this.pausadoBasicoControlIndicadores;
   }
-
   public hornoBasicoConControlIndicadores(): void {
     this.voltajeInternoControlIndicadores = this.voltaje;
     this.apagadoBasicoControlIndicadores = true;
@@ -602,7 +601,6 @@ export class AppComponent {
       }
     }, this.ts * this.tiempoAlentamiento);
   }
-
   private validarReferennciaBasicoControlIndicadores(): void {
     this.errorBasicoControlIndicadores = Math.abs(this.referencia - this.temperaturaBasicoControlIndicadores);
     if (this.temperaturaBasicoControlIndicadores > this.referencia) {
@@ -618,7 +616,6 @@ export class AppComponent {
     }
     return;
   }
-
   public descargarArchivoSinDisipacionControlIndicadores(): void {
     this.crearDocumentoExcel(this.datosBasicoControl, '-sin-disipacion-control-indicadores');
   }
@@ -668,7 +665,6 @@ export class AppComponent {
       }
     });
   }
-
   private insercionDatosDisipacionControlIndicadores(): void {
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6, this.referencia));
     this.salidaSistemaControlIndicadores.push(this.temperaturaDisipacionControlIndicadores);
@@ -676,7 +672,6 @@ export class AppComponent {
     this.datosDisipacionControlIndicadores.push(new DataChart(this.tiempo6, this.temperaturaDisipacionControlIndicadores));
     this.graficaDisipacionControlIndicadores.update();
   }
-
   public apagarDisipacionControlIndicadores(): void {
     clearInterval(this.intervalDisipacionControlIndicadores);
     this.pausadoDisipasionControlIndicadores = false;
@@ -684,12 +679,12 @@ export class AppComponent {
     this.apagadoDisipasionControlIndicadores = false;
     return;
   }
-
   public pausarDisipacionControlIndicadores(): void {
     this.pausadoDisipasionControlIndicadores = !this.pausadoDisipasionControlIndicadores;
   }
 
   public hornoDisipacionControlIndicadores(): void {
+    this.interrump = false;
     this.pausadoDisipasionControlIndicadores = true;
     this.apagadoDisipasionControlIndicadores = true;
     this.voltajeInternoDisipacionIndicadores = this.voltaje;
@@ -699,12 +694,11 @@ export class AppComponent {
     this.datosDisipacionControlIndicadores = [];
     this.datosReferenciaDisipacionControlIndicadores = [];
     this.tiempo6 = 4;
-    this.errorDisipacionControlIndicadores = 0;
-    this.mpDisipacion = 0;
-    this.poDisipacion = 0;
-    this.tssDisipacion = 0;
-    this.essDisipacion = 0;
-    this.vfDisipacion = 0;
+    this.errorDisipacionControlIndicadores = this.numberInterrupcion = 0;
+    const max = 200;
+    const min = 100;
+    this.numberInterrupcion = Math.round(Math.random() * (max - min) + min);
+    this.mpDisipacion = this.poDisipacion = this.tssDisipacion = this.essDisipacion = this.vfDisipacion = 0;
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 4, this.referencia));
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 3, this.referencia));
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 2, this.referencia));
@@ -721,6 +715,13 @@ export class AppComponent {
           + this.num2ControlIndicadores * this.uControlIndicadores[this.tiempo6 - 2] +
           this.den1ControlIndicadores * this.salidaSistemaControlIndicadores[this.tiempo6 - 1] +
           this.den2ControlIndicadores * this.salidaSistemaControlIndicadores[this.tiempo6 - 2];
+        if (this.interrump) {
+          this.interrumpir();
+        }
+        if (this.numberInterrupcion === this.tiempo6 || this.numberInterrupcion * 2 === this.tiempo6) {
+          console.log(this.numberInterrupcion);
+          this.interrumpir();
+        }
         this.insercionDatosDisipacionControlIndicadores();
         this.tiempo6++;
         this.temperaturaRedondeoControlIndicadores = Math.round(this.temperaturaDisipacionControlIndicadores);
@@ -751,6 +752,15 @@ export class AppComponent {
       this.calcularTSS();
     }
     return;
+  }
+
+  private interrumpir(): void {
+    this.temperaturaDisipacionControlIndicadores = this.temperaturaDisipacionControlIndicadores + this.tempAmbiental;
+    this.interrump = false;
+  }
+
+  public interrumpirTemp(): void {
+    this.interrump = true;
   }
 
   private revisarMP(): void {
