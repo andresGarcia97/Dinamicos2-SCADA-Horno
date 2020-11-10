@@ -15,8 +15,8 @@ export class AppComponent {
   ts = 1;
   tiempoAlentamiento = 10;
   referencia = 100;
-  maximoIteraciones = 1500;
-  k = 1;
+  maximoIteraciones = 800;
+  k = 0.1;
 
   // variables primer ejercicio, sin disipacion
   tituloGraficaBasica = 'grafica1';
@@ -673,6 +673,9 @@ export class AppComponent {
     this.graficaDisipacionControlIndicadores.update();
   }
   public apagarDisipacionControlIndicadores(): void {
+    this.calcularPo();
+    this.calcularTSS();
+    this.calcularESS();
     clearInterval(this.intervalDisipacionControlIndicadores);
     this.pausadoDisipasionControlIndicadores = false;
     this.intervalDisipacionControlIndicadores = null;
@@ -696,7 +699,7 @@ export class AppComponent {
     this.tiempo6 = 4;
     this.errorDisipacionControlIndicadores = this.numberInterrupcion = 0;
     const max = 200;
-    const min = 100;
+    const min = 10;
     this.numberInterrupcion = Math.round(Math.random() * (max - min) + min);
     this.mpDisipacion = this.poDisipacion = this.tssDisipacion = this.essDisipacion = this.vfDisipacion = 0;
     this.datosReferenciaDisipacionControlIndicadores.push(new DataChart(this.tiempo6 - 4, this.referencia));
@@ -715,13 +718,12 @@ export class AppComponent {
           + this.num2ControlIndicadores * this.uControlIndicadores[this.tiempo6 - 2] +
           this.den1ControlIndicadores * this.salidaSistemaControlIndicadores[this.tiempo6 - 1] +
           this.den2ControlIndicadores * this.salidaSistemaControlIndicadores[this.tiempo6 - 2];
-        if (this.interrump) {
+        /*if (this.interrump) {
           this.interrumpir();
         }
-        if (this.numberInterrupcion === this.tiempo6 || this.numberInterrupcion * 2 === this.tiempo6) {
-          console.log(this.numberInterrupcion);
+        if (this.numberInterrupcion === this.tiempo6) {
           this.interrumpir();
-        }
+        }*/
         this.insercionDatosDisipacionControlIndicadores();
         this.tiempo6++;
         this.temperaturaRedondeoControlIndicadores = Math.round(this.temperaturaDisipacionControlIndicadores);
@@ -733,23 +735,12 @@ export class AppComponent {
 
   private validarReferennciaDisipacionControlIndicadores(): void {
     this.errorDisipacionControlIndicadores = this.referencia - this.temperaturaRedondeoControlIndicadores;
-    if (this.temperaturaRedondeoControlIndicadores > this.referencia) {
-      this.voltajeInternoDisipacionIndicadores = this.voltajeInternoDisipacionIndicadores * this.k * -1;
-      if (this.voltajeInternoDisipacionIndicadores > 0) {
-        this.voltajeInternoDisipacionIndicadores = this.voltajeInternoDisipacionIndicadores * -1;
-      }
-      if (this.tiempo6 % 50 === 0) {
-        this.voltajeInternoDisipacionIndicadores--;
-      }
+    if (this.temperaturaRedondeoControlIndicadores !== this.referencia) {
+      const voltaje = this.k * this.errorDisipacionControlIndicadores;
+      this.voltajeInternoDisipacionIndicadores = Math.round((voltaje + Number.EPSILON) * 100) / 100;
     }
-    if (this.temperaturaRedondeoControlIndicadores < this.referencia) {
-      this.voltajeInternoDisipacionIndicadores =
-        this.k * this.errorDisipacionControlIndicadores;
-    }
-    else if (this.temperaturaRedondeoControlIndicadores === this.referencia || this.tiempo6 === this.maximoIteraciones) {
+    else if (this.tiempo6 === this.maximoIteraciones) {
       this.apagarDisipacionControlIndicadores();
-      this.calcularPo();
-      this.calcularTSS();
     }
     return;
   }
